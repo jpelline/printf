@@ -35,7 +35,7 @@ static int	ft_puthex(uintptr_t decimal, char conv, int i, int p)
 	hexadecimal[i] = '\0';
 	ft_reverse_string(hexadecimal);
 	i = ft_putstr_fd(hexadecimal, 1);
-	if (i == -1)
+	if (i == -1 || p == -1)
 		return (-1);
 	return (i + p);
 }
