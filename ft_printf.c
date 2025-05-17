@@ -34,7 +34,9 @@ static int	ft_puthex(uintptr_t decimal, char conv, int i, int p)
 	}
 	hexadecimal[i] = '\0';
 	ft_reverse_string(hexadecimal);
-	ft_putstr_fd(hexadecimal, 1);
+	i = ft_putstr_fd(hexadecimal, 1);
+	if (i == -1)
+		return (-1);
 	return (i + p);
 }
 
@@ -59,7 +61,8 @@ int	ft_printf(const char *format, ...)
 {
 	va_list	args;
 	int		count;
-
+	int		check;
+	
 	if (!format)
 		return (-1);
 	count = 0;
@@ -72,9 +75,12 @@ int	ft_printf(const char *format, ...)
 	while (*format)
 	{
 		if (*format == '%' && format[1] && ft_strchr("cspxXdiu%", format[1]))
-			count += ft_write_conversion(&args, *++format);
+			check = ft_write_conversion(&args, *++format);
 		else
-			count += write(1, &*format, 1);
+			check = write(1, &*format, 1);
+		if (check == -1)
+			return (va_end(args), check)
+		count += check;
 		format++;
 	}
 	return (va_end(args), count);
