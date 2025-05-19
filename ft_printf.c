@@ -51,7 +51,7 @@ static int	ft_write_conversion(va_list *args, char conv)
 	if (conv == 'x' || conv == 'X')
 		return (ft_puthex((unsigned)va_arg(*args, unsigned), conv, 0, 0));
 	if (conv == 'd' || conv == 'i')
-		return (ft_putnbr_fd((int)va_arg(*args, int), 1));
+		return (ft_putnbr_fd((int)va_arg(*args, int), 1, 0));
 	if (conv == 'u')
 		return (ft_uputnbr_fd((unsigned)va_arg(*args, unsigned), 1));
 	return (write(1, "%", 1));
