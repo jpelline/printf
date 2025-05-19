@@ -15,6 +15,7 @@
 size_t	ft_uputnbr_fd(unsigned int n, int fd)
 {
 	size_t	count;
+	int	check;
 
 	count = 0;
 	if (n > 9)
@@ -24,7 +25,10 @@ size_t	ft_uputnbr_fd(unsigned int n, int fd)
 	}
 	else
 	{
-		count += ft_putchar_fd(n + '0', fd);
+		check = ft_putchar_fd(n + '0', fd);
+		if (check = -1)
+			return (-1);
+		count += check;
 	}
 	return (count);
 }
