@@ -12,18 +12,18 @@
 
 #include "ft_printf.h"
 
-static int	ft_puthex(uintptr_t decimal, char conv, int i, int p)
+static int	ft_puthex(uintptr_t decimal, char c, int i, int prefix)
 {
 	char		hexadecimal[20];
 	const char	*hex_table;
 
-	if (!decimal && conv == 'p')
+	if (!decimal && c == 'p')
 		return (write(1, "(nil)", 5));
 	if (decimal == 0)
 		return (write(1, "0", 1));
-	if (conv == 'p')
-		p = ft_putstr_fd("0x", 1);
-	if (conv == 'x' || conv == 'p')
+	if (c == 'p')
+		prefix = write(1, "0x", 2);
+	if (c == 'x' || c == 'p')
 		hex_table = "0123456789abcdef";
 	else
 		hex_table = "0123456789ABCDEF";
@@ -34,26 +34,26 @@ static int	ft_puthex(uintptr_t decimal, char conv, int i, int p)
 	}
 	hexadecimal[i] = '\0';
 	ft_reverse_string(hexadecimal);
-	i = ft_putstr_fd(hexadecimal, 1);
-	if (i == -1 || p == -1)
+	i = write(1, hexadecimal, i);
+	if (i == -1 || prefix == -1)
 		return (-1);
-	return (i + p);
+	return (i + prefix);
 }
 
-static int	ft_write_conversion(va_list *args, char conv)
+static int	ft_write_conversion(va_list *args, char c)
 {
-	if (conv == 'c')
+	if (c == 'c')
 		return (ft_putchar_fd((char)va_arg(*args, int), 1));
-	if (conv == 's')
+	if (c == 's')
 		return (ft_putstr_fd(va_arg(*args, char *), 1));
-	if (conv == 'p')
-		return (ft_puthex((uintptr_t)va_arg(*args, void *), conv, 0, 0));
-	if (conv == 'x' || conv == 'X')
-		return (ft_puthex((unsigned)va_arg(*args, unsigned), conv, 0, 0));
-	if (conv == 'd' || conv == 'i')
-		return (ft_putnbr_fd((int)va_arg(*args, int), 1, 0));
-	if (conv == 'u')
-		return (ft_uputnbr_fd((unsigned)va_arg(*args, unsigned), 1));
+	if (c == 'p')
+		return (ft_puthex((uintptr_t)va_arg(*args, void *), c, 0, 0));
+	if (c == 'x' || c == 'X')
+		return (ft_puthex(va_arg(*args, unsigned), c, 0, 0));
+	if (c == 'd' || c == 'i')
+		return (ft_putnbr_fd(va_arg(*args, int), 1, 0));
+	if (c == 'u')
+		return (ft_uputnbr_fd(va_arg(*args, unsigned), 1));
 	return (write(1, "%", 1));
 }
 
@@ -65,23 +65,22 @@ int	ft_printf(const char *format, ...)
 	
 	if (!format)
 		return (-1);
-	count = 0;
+	count = -1;
 	while (format[count])
-		if (format[count++] == '%')
-			if (!format[count] || !ft_strchr("cspxXdiu%", format[count++]))
-				return (-1);
+		if (format[count++] == '%' && (!format[count]
+			|| !ft_strchr("cspxXdiu%", format[count++]))
+			return (-1);
 	va_start(args, format);
 	count = 0;
 	while (*format)
 	{
-		if (*format == '%' && format[1] && ft_strchr("cspxXdiu%", format[1]))
-			check = ft_write_conversion(&args, *++format);
+		if (*format++ == '%')
+			check = ft_write_conversion(&args, *format++);
 		else
-			check = write(1, &*format, 1);
+			check = write(1, format - 1, 1);
 		if (check == -1)
-			return (va_end(args), check)
+			return (va_end(args), check);
 		count += check;
-		format++;
 	}
 	return (va_end(args), count);
 }
