@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-size_t	ft_putnbr_fd(int n, int fd)
+size_t	ft_putnbr_fd(int n, int fd, int check)
 {
 	size_t	count;
 
@@ -21,7 +21,10 @@ size_t	ft_putnbr_fd(int n, int fd)
 		return (ft_putstr_fd("-2147483648", fd));
 	if (n < 0)
 	{
-		count += ft_putchar_fd('-', fd);
+		check = ft_putchar_fd('-', fd);
+		if (check == -1)
+			return (-1);
+		count += check;
 		count += ft_putnbr_fd(-n, fd);
 	}
 	else if (n > 9)
@@ -31,7 +34,10 @@ size_t	ft_putnbr_fd(int n, int fd)
 	}
 	else
 	{
-		count += ft_putchar_fd(n + '0', fd);
+		check = ft_putchar_fd(n + '0', fd);
+		if (check == -1)
+			return (-1);
+		count += check;
 	}
 	return (count);
 }
