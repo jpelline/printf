@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-CC 		= cc
+CC 			= cc
 CFLAGS		= -Wall -Wextra -Werror
 
 LIBFT_DIR	= ./libft
@@ -21,7 +21,7 @@ OBJS		= $(SRCS:.c=.o)
 
 NAME		= libftprintf.a
 LIBS		= -L$(LIBFT_DIR)
-INC		= -I. -I$(LIBFT_DIR)
+INC			= -I. -I$(LIBFT_DIR)
 
 all: $(NAME)
 
