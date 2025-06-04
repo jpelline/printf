@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-CC 			= cc
+CC 		= cc
 CFLAGS		= -Wall -Wextra -Werror
 
 LIBFT_DIR	= ./libft
@@ -18,12 +18,10 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 
 SRCS		= ft_printf.c	
 OBJS		= $(SRCS:.c=.o)
-EXEC_SRCS	= $(SRCS) main.c
-EXEC_OBJS	= $(EXEC_SRCS:.c=.o)
 
 NAME		= libftprintf.a
 LIBS		= -L$(LIBFT_DIR)
-INC			= -I. -I$(LIBFT_DIR)
+INC		= -I. -I$(LIBFT_DIR)
 
 all: $(NAME)
 
@@ -31,30 +29,20 @@ $(LIBFT):
 	$(MAKE) -C ./libft
 
 $(NAME): $(LIBFT) $(OBJS)
-	@echo "Archiving $@"
-	@cp $(LIBFT) $(NAME)
+	@if [ ! -f $(NAME) ]; then cp $(LIBFT) $(NAME); fi
 	ar rcs $(NAME) $(OBJS)
 
 %.o: %.c
-	@echo "Compiling $<"
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	@echo "Cleaning object files.."
 	rm -f $(OBJS) $(EXEC_OBJS)
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean:	clean
-	@echo "Cleaning executable/archive.."
-	rm -f $(NAME) custom_exec
+	rm -f $(NAME)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re:	fclean all
 
-exec: custom_exec
-
-custom_exec: $(NAME) main.o
-	@echo "Building custom executable: $@"
-	$(CC) $(CFLAGS) main.o -L. -lftprintf -o $@
-
-.PHONY: all clean fclean re exec custom_exec
+.PHONY: all clean fclean re
